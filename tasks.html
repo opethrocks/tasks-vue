@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>To Do List</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Andika' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+        <script src="main.js"></script>
+    </head>
+    <body>
+        <div id="root">
+            <div class="row">
+                <h1 class="title">To Do List</h1>
+                <div class="column left">
+                    <h2>Pending Tasks</h2>
+                    <ul>
+                        <li class="card" 
+                            v-for="task in tasks" 
+                            v-if="!task.completed">
+
+                        <input type="checkbox" 
+                                :id="task.description" 
+                                :value="task.description" 
+                                @change="completeTask(task)">
+
+                        <label class="note-font">
+                            {{ task.description }}
+                            <br/>
+                            {{ task.time }}
+                        </label>
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="column right">
+                    <h2>Completed Tasks</h2>
+                    <ul>
+                        <li class="card"
+                            v-for="task in completedTasks"> 
+
+                            <label class="note-font">
+                                {{ task.description }}
+                                <br/>
+                                {{ task.time }}
+                            </label>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <input  class="text-input"
+                        placeholder="Add items here and press enter"
+                        id="input"
+                        type="text"
+                        v-model="newTask"
+                        @keyup.enter="addTask">
+                <br/>
+
+                <button @click="addTask"
+                        :title="add">Add Task</button>
+                <button @click="clearTasks"
+                        :title="clear">Clear Tasks</button>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    var app = new Vue({
+        el: "#root",
+        data: {
+            tasks: [],
+            newTask: '',
+            add: "Click to add task",
+            clear: "Click to clear completed tasks",
+        },
+        methods: {
+            addTask() {
+                if (this.newTask !== '') {
+                    this.tasks.push(
+                        { description: this.newTask, 
+                          time: new Date().toLocaleString(), 
+                          completed: false
+                        }
+                    )
+                } else {
+                    alert('Task can not be blank!')
+                }
+                this.newTask = '';
+            },
+            completeTask(task) {
+                task.completed = true;
+                task.time = new Date().toLocaleString();
+            },   
+            
+            clearTasks() {
+                this.tasks = this.tasks.filter(task => !task.completed);
+            },
+        },
+        computed: {
+            completedTasks() {
+                return this.tasks.filter(task => task.completed);
+            },
+        }
+    })
+</script>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Andika'; 
+        background-color:rgb(62, 194, 255);
+    }
+
+    .column {
+        float: left;
+        width: 50%;
+        padding: 0 10px;
+        height: auto;
+        margin-bottom: 50px;
+    }
+
+    .row {
+        margin: 0 -5px;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+        padding: 16px;
+        text-align: center;
+        background-color: yellow;
+        list-style: none;
+        margin: 20px 20px 20px 20px;
+    }
+
+    h1,h2 {
+        color: white;
+        text-align: center;
+    }
+
+    .left {
+        background-color:tomato;
+    }
+
+    .right {
+        background-color: darkseagreen;
+    }   
+
+    .text-input {
+        padding: 5px;
+        border: 2px solid;
+        border-radius: 5px;
+        border-color: rgb(2, 95, 201);
+        width: 25%;
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: rgb(255, 153, 0);
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .note-font {
+        font-family: 'Annie use your telescope';
+        font-size: 25px;
+    }
+
+    .title {
+        font-size: 35px;
+
+    }
+</style>
+
